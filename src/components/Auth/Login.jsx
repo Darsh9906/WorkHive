@@ -11,6 +11,8 @@ const Login = ({handleLogin}) => {
 
     e.preventDefault()
     handleLogin(email,password)
+
+    
     
     setEmail('')
     setPassword('')
@@ -21,9 +23,7 @@ const Login = ({handleLogin}) => {
         <div className='p-20 border-2 border-red-900 rounded-2xl'>
 
         <form 
-        onSubmit={(e)=>{
-          submitHandler(e)
-        }}
+        onSubmit={submitHandler}
         className='flex flex-col gap-3 p-5'>
             <input 
             value={email}

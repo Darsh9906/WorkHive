@@ -3,10 +3,12 @@ import Header from '../EmployeeDashboard/Header'
 import CreateTask from '../EmployeeDashboard/CreateTask'
 import AllTasks from '../EmployeeDashboard/AllTasks'
 
-const AdminDashboard = () => {
+const AdminDashboard = ({data}) => {
+
+
     return (
         <div className='px-7 py-4 min-h-screen w-full'>
-            <Header />
+            <Header data={data}/>
             
             <CreateTask />
 

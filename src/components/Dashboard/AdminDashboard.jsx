@@ -1,7 +1,7 @@
 import React from 'react'
-import Header from '../EmployeeDashboard/Header'
-import CreateTask from '../EmployeeDashboard/CreateTask'
-import AllTasks from '../EmployeeDashboard/AllTasks'
+import Header from '../Others/Header'
+import CreateTask from '../Others/CreateTask'
+import AllTasks from '../Others/AllTasks'
 
 const AdminDashboard = ({data}) => {
 

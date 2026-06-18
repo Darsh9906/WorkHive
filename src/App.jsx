@@ -16,13 +16,11 @@ const App = () => {
 
   const loggedInUser = localStorage.getItem('loggedInUser')
 
-  console.log("AFTER REFRESH =", loggedInUser)
 
   if(loggedInUser){
 
     const userData = JSON.parse(loggedInUser)
 
-    console.log("PARSED =", userData)
 
     setUser(userData)
 
@@ -55,15 +53,12 @@ const App = () => {
 
       if (employee) {
 
-      console.log('1');
 
         setUser({ role: 'employee', data: employee })
 
-  console.log("2")
         setLoggedInUserData(employee)
         localStorage.setItem('loggedInUser', JSON.stringify({ role: 'employee', data: employee }))
 
-          console.log("3")
            console.log(localStorage.getItem('loggedInUser'))
       } else {
 

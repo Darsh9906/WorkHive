@@ -8,7 +8,7 @@ import { AuthContext } from './context/AuthProvider'
 const App = () => {
 
   const [user, setUser] = useState('')
-  const authData = useContext(AuthContext)
+  const {userData} = useContext(AuthContext)
   const [loggedInUserData, setLoggedInUserData] = useState(null)
 
 
@@ -34,7 +34,7 @@ const App = () => {
     
     if (email === 'admin@example.com' && password === '123') {
 
-      const adminUser = authData.admin[0]
+      const adminUser = userData.admin[0]
       
 
       setUser({
@@ -47,9 +47,9 @@ const App = () => {
       localStorage.setItem('loggedInUser', JSON.stringify({ role: 'admin', data: adminUser }))
 
 
-    } else if (authData) {
+    } else if (userData) {
 
-      const employee = authData.employee.find((e) => email == e.email && e.password == password)
+      const employee = userData.employee.find((e) => email == e.email && e.password == password)
 
       if (employee) {
 
@@ -71,9 +71,9 @@ const App = () => {
   return (
     <div>
       {user?.role === 'admin' ? (
-        <AdminDashboard data={user.data} />
+        <AdminDashboard data={user.data} changeUser={setUser} />
       ) : user?.role === 'employee' ? (
-        <EmployeeDashboard data={user.data} />
+        <EmployeeDashboard data={user.data} changeUser={setUser} />
       ) : (
         <Login handleLogin={handleLogin} />
       )}

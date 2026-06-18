@@ -1,19 +1,21 @@
 import React from 'react'
 import Login from '../Auth/Login'
 
-const Header = ({data}) => {  
+const Header = (props) => {  
  
 
   const logOutUser = ()=> {
 
     localStorage.setItem('loggedInUser','')
-    window.location.reload()
+    // window.location.reload()
+    props.changeUser('')
+    
   }
 
   return (
     <div className='flex justify-between items-end'>
         <div className=''>
-            <h2 className='text-2xl '>Hello, <br /> <span className='text-4xl font-bold text-center'>{data?.firstName}👋 </span></h2>
+            <h2 className='text-2xl '>Hello, <br /> <span className='text-4xl font-bold text-center'>{props.data?.firstName}👋 </span></h2>
         </div>
 
         <button 

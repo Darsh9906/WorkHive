@@ -58,12 +58,6 @@ While building this project, I practiced:
 
 ---
 
-## 📸 Screenshots
-
-*Add screenshots here.*
-
----
-
 ## 🔮 Future Improvements
 
 * Task status update (Complete / Failed)

@@ -58,46 +58,6 @@ While building this project, I practiced:
 
 ---
 
-## 🔮 Future Improvements
-
-* Task status update (Complete / Failed)
-* Search employees
-* Task filtering
-* Better UI/UX
-* Backend integration
-* Redux Toolkit / Zustand integration
-* Authentication with JWT
-
----
-
-## ⚙️ Installation
-
-Clone the repository:
-
-```bash
-git clone <your-repository-url>
-```
-
-Go to the project folder:
-
-```bash
-cd workhive
-```
-
-Install dependencies:
-
-```bash
-npm install
-```
-
-Start the development server:
-
-```bash
-npm run dev
-```
-
----
-
 ## 🎯 Purpose
 
 This is a learning project built to strengthen my understanding of React fundamentals before moving to more advanced concepts like Redux Toolkit, TanStack Query, and full-stack application development.

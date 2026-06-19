@@ -8,7 +8,7 @@ const FailedTask = ({data}) => {
                 <h3 className='bg-red-700 px-2 rounded-md font-medium'>{data.category}</h3>
                 <h4 className='font-bold text-[14px]'>{data.taskDate}</h4>
             </div>
-           <h2 className='mt-5 text-4xl whitespace-nowrap'>{data.taskTitle}</h2> 
+           <h2 className='mt-5 text-2xl whitespace-nowrap'>{data.taskTitle}</h2> 
            <p className='mt-5 '>
             {data.taskDescription}
             </p>

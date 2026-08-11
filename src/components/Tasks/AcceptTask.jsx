@@ -1,24 +1,44 @@
 import React from 'react'
+import { Calendar, PlayCircle, CheckCircle2, XCircle } from 'lucide-react'
 
-const AcceptTask = ({data}) => {
-    console.log(data);
-    
+const AcceptTask = ({ data }) => {
   return (
-   <div className='bg-yellow-400 h-full w-[300px] rounded-2xl shrink-0 p-4 text-black'>
-            
-            <div className='flex justify-between items-center'>
-                <h3 className='bg-red-700 px-2 rounded-md font-medium text-white'>{data.category}</h3>
-                <h4 className='font-bold text-[14px] text-white'>{data.taskDate}</h4>
-            </div>
-           <h2 className='mt-5 font-medium text-[26px] whitespace-nowrap '>{data.taskTitle}</h2> 
-           <p className='mt-5 '>
-           { data.taskDescription}
-            </p>
-            <div className='flex justify-between mt-4'>
-                <button className='bg-green-500 py-1 px-2 text-sm text-white'>Mark as Completed</button>
-                <button className='bg-red-800 py-1 px-2 text-sm text-white'>Mark as Failed</button>
-            </div>
-       </div>
+    <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs hover:border-slate-300 hover:shadow-md transition-all duration-200 flex flex-col justify-between min-h-[230px]">
+      <div>
+        <div className="flex items-center justify-between gap-2 mb-3">
+          <span className="bg-slate-100 text-slate-700 border border-slate-200 px-2 py-0.5 rounded-md text-xs font-medium">
+            {data.category}
+          </span>
+          <span className="bg-amber-50 text-amber-700 border border-amber-200 px-2 py-0.5 rounded-md text-[11px] font-semibold flex items-center gap-1">
+            <PlayCircle className="w-3 h-3 text-amber-600" />
+            In Progress
+          </span>
+        </div>
+
+        <h3 className="text-base font-semibold text-slate-900 leading-snug">{data.taskTitle}</h3>
+        <p className="mt-2 text-xs text-slate-600 leading-relaxed line-clamp-3">
+          {data.taskDescription}
+        </p>
+      </div>
+
+      <div className="mt-5 pt-3 border-t border-slate-100 flex flex-col gap-3">
+        <div className="flex items-center gap-1.5 text-xs text-slate-500 font-mono">
+          <Calendar className="w-3.5 h-3.5 text-slate-400" />
+          <span>Due: {data.taskDate}</span>
+        </div>
+
+        <div className="flex gap-2">
+          <button className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 px-2.5 rounded-lg text-xs transition-colors cursor-pointer flex items-center justify-center gap-1 shadow-xs">
+            <CheckCircle2 className="w-3.5 h-3.5" />
+            <span>Complete</span>
+          </button>
+          <button className="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-2.5 rounded-lg text-xs transition-colors cursor-pointer flex items-center justify-center gap-1 shadow-xs">
+            <XCircle className="w-3.5 h-3.5" />
+            <span>Fail</span>
+          </button>
+        </div>
+      </div>
+    </div>
   )
 }
 

@@ -1,159 +1,138 @@
 import React, { useContext, useState } from 'react'
-import { PlusCircle  } from 'lucide-react'
+import { PlusCircle } from 'lucide-react'
 import { AuthContext } from '../../context/AuthProvider'
 
-
-
 const CreateTask = () => {
+  const { userData, setUserData } = useContext(AuthContext)
 
+  const [taskTitle, setTaskTitle] = useState('')
+  const [taskDescription, setTaskDescription] = useState('')
+  const [taskDate, setTaskDate] = useState('')
+  const [asignTo, setAsignTo] = useState('')
+  const [category, setCategory] = useState('')
 
-   const {userData,setUserData} =  useContext(AuthContext)
+  const submitHandler = (e) => {
+    e.preventDefault()
 
+    const task = {
+      taskDate,
+      taskDescription,
+      category,
+      taskTitle,
+      active: false,
+      newTask: true,
+      completed: false,
+      failed: false
+    }
 
-    const [taskTitle, setTaskTitle] = useState('')
-    const [taskDescription, setTaskDescription] = useState('')
-    const [taskDate, setTaskDate] = useState('')
-    const [asignTo, setAsignTo] = useState('')
-    const [category, setCategory] = useState('')
+    const data = [...userData.employee]
 
-
-    
-    const submitHandler = (e)=> {
-
-        e.preventDefault()
-
-         const task = {
-    taskDate,
-    taskDescription,
-    category,
-    taskTitle,
-    active:false,
-    newTask:true,
-    completed:false,
-    failed:false
-}
-        
-        const data = [...userData.employee]
-
-        
-       data.forEach((emp)=>{
-
-    if(
-
-      emp.firstName.toLowerCase()
-
-      ===
-
-      asignTo.toLowerCase()
-
-    ){
-
+    data.forEach((emp) => {
+      if (emp.firstName.toLowerCase() === asignTo.toLowerCase()) {
         emp.tasks.push(task)
+        if (emp.taskNumber) {
+          emp.taskNumber.newTask = (emp.taskNumber.newTask || 0) + 1
+        }
+      }
+    })
 
-    }
+    setUserData({
+      ...userData,
+      employee: data
+    })
 
-})
+    localStorage.setItem('employees', JSON.stringify(data))
 
-setUserData({
-
-    ...userData,
-
-    employee: data
-
-})
-
-localStorage.setItem(
-
-  'employees',
-
-  JSON.stringify(data)
-
-)
-
-        
-        setAsignTo('')
-        setCategory('')
-        setTaskDate('')
-        setTaskDescription('')
-        setTaskTitle('')
-
-    }
+    setAsignTo('')
+    setCategory('')
+    setTaskDate('')
+    setTaskDescription('')
+    setTaskTitle('')
+  }
 
   return (
-      <div >
-                <form onSubmit={(e)=>{
+    <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-xs mt-6">
+      <div className="flex items-center gap-2 mb-5">
+        <PlusCircle className="w-5 h-5 text-blue-600" />
+        <h2 className="text-base font-bold text-slate-900">Assign New Task</h2>
+      </div>
 
-                    submitHandler(e)
-                }} 
-                className='flex justify-between mt-6 bg-[#212121] p-4 gap-10'
-                >
-                        
-                        <div className='w-1/2'>
-                            <div >
-                                <h3 className='font-medium text-gray-300'>Task Title</h3>
-                                <input
-                                value={taskTitle}
-                                onChange={(e)=>{
-                                    
-                                    setTaskTitle(e.target.value)
-                                }} 
-                                className='bg-[#333] p-2 w-full mt-2 rounded-md outline-none' type="text" placeholder='Make a UI design' />
-                            </div>
+      <form onSubmit={submitHandler} className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-medium text-slate-700 mb-1.5">
+              Task Title
+            </label>
+            <input
+              value={taskTitle}
+              onChange={(e) => setTaskTitle(e.target.value)}
+              className="w-full bg-slate-50 border border-slate-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition-all"
+              type="text"
+              placeholder="e.g. Make a UI design"
+            />
+          </div>
 
-                            <div className='mt-3'>
-                                <h3 className='font-medium text-gray-300'>Date</h3>
-                                <input 
-                                 value={taskDate}
-                                onChange={(e)=>{
-                                    
-                                    setTaskDate(e.target.value)
-                                }} 
-                                className='bg-[#333] p-2 w-full mt-2 rounded-md outline-none' type="date" />
-                            </div>
+          <div>
+            <label className="block text-xs font-medium text-slate-700 mb-1.5">
+              Due Date
+            </label>
+            <input
+              value={taskDate}
+              onChange={(e) => setTaskDate(e.target.value)}
+              className="w-full bg-slate-50 border border-slate-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 outline-none transition-all"
+              type="date"
+            />
+          </div>
 
-                            <div className='mt-3'>
-                                <h3 className='font-medium text-gray-300'>Assign To</h3>
-                                <input 
-                                 value={asignTo}
-                                onChange={(e)=>{
-                                    
-                                    setAsignTo(e.target.value)
-                                }} 
-                                className='bg-[#333] p-2 w-full mt-2 rounded-md outline-none' type="text" placeholder='Employee name'/>
-                            </div>
+          <div>
+            <label className="block text-xs font-medium text-slate-700 mb-1.5">
+              Assign To (Employee Name)
+            </label>
+            <input
+              value={asignTo}
+              onChange={(e) => setAsignTo(e.target.value)}
+              className="w-full bg-slate-50 border border-slate-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition-all"
+              type="text"
+              placeholder="e.g. Aarav"
+            />
+          </div>
 
-                            <div className='mt-3'>
-                                <h3 className='font-medium text-gray-300'>Category</h3>
-                                <input 
-                                 value={category}
-                                onChange={(e)=>{
-                                    
-                                    setCategory(e.target.value)
-                                }}  
-                                 className='bg-[#333] p-2 w-full mt-2 rounded-md outline-none' type="text" placeholder='Design, Development, etc...' />
-                            </div>
-                        </div>
+          <div>
+            <label className="block text-xs font-medium text-slate-700 mb-1.5">
+              Category
+            </label>
+            <input
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full bg-slate-50 border border-slate-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition-all"
+              type="text"
+              placeholder="e.g. Design, Frontend"
+            />
+          </div>
+        </div>
 
-                    <div className='w-1/2 flex flex-col justify-between'>
-                        <div className='mt-3 '>
-                            <h3 className='font-medium text-gray-300'>Description</h3>
-                            <textarea 
-                             value={taskDescription}
-                                onChange={(e)=>{
-                                    
-                                    setTaskDescription(e.target.value)
-                                }} 
-                            className='bg-[#333] h-48 px-2 w-full py-2 mt-2 rounded-md outline-none ' />
-                        </div>  
+        <div>
+          <label className="block text-xs font-medium text-slate-700 mb-1.5">
+            Task Description
+          </label>
+          <textarea
+            value={taskDescription}
+            onChange={(e) => setTaskDescription(e.target.value)}
+            className="w-full bg-slate-50 border border-slate-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition-all h-28 resize-none"
+            placeholder="Detailed description of the task..."
+          />
+        </div>
 
-                        <div className='flex justify-center mt-5 '>
-                            <button className='bg-emerald-400 flex-1 w-full py-4 text-xl font-bold rounded-md cursor-pointer '>
-                                Create Task
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
+        <div className="flex justify-end pt-2">
+          <button
+            type="submit"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-6 rounded-xl text-sm transition-colors cursor-pointer shadow-xs"
+          >
+            Create Task
+          </button>
+        </div>
+      </form>
+    </div>
   )
 }
 

@@ -41,17 +41,6 @@ const Signup = ({ onSwitchToLogin }) => {
 
   return (
     <div className="w-full max-w-md mx-auto">
-      <div className="text-center mb-6">
-        <div className="inline-flex items-center justify-center w-11 h-11 rounded-xl bg-blue-600 text-white shadow-md shadow-blue-500/20 mb-3">
-          <BriefcaseBusiness className="w-5 h-5 fill-white/20 text-white" />
-        </div>
-        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-          Work<span className="text-blue-600">Hive</span>
-        </h1>
-        <p className="text-xs text-slate-500 mt-1">
-          Simple & Smart Employee Management
-        </p>
-      </div>
 
       <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm">
         <div className="grid grid-cols-2 gap-1 p-1 bg-slate-100 rounded-xl mb-6">

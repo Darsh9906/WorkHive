@@ -1,5 +1,5 @@
 import React from 'react'
-import { LayoutDashboard, LogOut, BriefcaseBusiness, Shield, UserCheck } from 'lucide-react'
+import { LayoutDashboard, LogOut, BriefcaseBusiness, ShieldUser, CircleUserRound } from 'lucide-react'
 
 const Sidebar = ({ data, changeUser }) => {
   const logOutUser = () => {
@@ -13,7 +13,7 @@ const Sidebar = ({ data, changeUser }) => {
   const userName = data?.firstName || (role === 'Admin' ? 'Admin' : 'Employee')
 
   return (
-    <aside className="w-64 min-h-screen shrink-0 bg-white border-r border-slate-200 flex flex-col justify-between p-5 select-none">
+    <aside className="w-64 h-screen shrink-0 sticky top-0 bg-white border-r border-slate-200 flex flex-col justify-between p-5 select-none z-20">
       <div className="flex flex-col gap-6">
         <div className="flex items-center gap-3 px-1">
           <div className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-xs">
@@ -23,7 +23,7 @@ const Sidebar = ({ data, changeUser }) => {
             <div className="flex items-center gap-1.5">
               <span className="font-bold text-base tracking-tight text-slate-900">WorkHive</span>
             </div>
-            <span className="text-xs text-slate-500">Employee Portal</span>
+            <span className="text-xs text-slate-500">Workspace Portal</span>
           </div>
         </div>
 
@@ -47,11 +47,11 @@ const Sidebar = ({ data, changeUser }) => {
             <span className="text-xs font-semibold text-slate-900 truncate">
               {userName}
             </span>
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-0.5">
               {role === 'Admin' ? (
-                <Shield className="w-3 h-3 text-amber-500" />
+                <ShieldUser className="w-3.5 h-3.5 text-amber-500" />
               ) : (
-                <UserCheck className="w-3 h-3 text-emerald-600" />
+                <CircleUserRound className="w-3.5 h-3.5 text-emerald-600" />
               )}
               <span className="text-[11px] text-slate-500 capitalize">{role}</span>
             </div>

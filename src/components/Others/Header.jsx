@@ -1,14 +1,7 @@
 import React from 'react'
-import { LogOut, ShieldCheck, UserCheck } from 'lucide-react'
+import { ShieldCheck, UserCheck } from 'lucide-react'
 
 const Header = (props) => {  
-  const logOutUser = () => {
-    localStorage.setItem('loggedInUser', '')
-    if (props.changeUser) {
-      props.changeUser('')
-    }
-  }
-
   const role = props.data?.email === 'admin@example.com' || !props.data?.taskNumber ? 'Admin' : 'Employee'
   const userName = props.data?.firstName || (role === 'Admin' ? 'Admin' : 'Employee')
 
@@ -18,7 +11,7 @@ const Header = (props) => {
         <div className="flex items-center gap-2 text-xs font-medium text-slate-500">
           <span>Workspace</span>
           <span>/</span>
-          <span className="text-slate-900 font-semibold">Employee Dashboard</span>
+          <span className="text-slate-900 font-semibold">{role} Dashboard</span>
         </div>
         <h1 className="text-2xl font-bold tracking-tight text-slate-900">
           Welcome back, <span className="text-blue-600">{userName}</span>
@@ -31,7 +24,7 @@ const Header = (props) => {
       </div>
 
       <div className="flex items-center gap-3">
-        <div className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-white border border-slate-200 shadow-xs">
+        <div className="flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-white border border-slate-200 shadow-xs">
           <div className="w-7 h-7 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs">
             {userName.charAt(0).toUpperCase()}
           </div>
@@ -39,7 +32,7 @@ const Header = (props) => {
             <span className="text-xs font-semibold text-slate-900 leading-tight">
               {userName}
             </span>
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-0.5">
               {role === 'Admin' ? (
                 <ShieldCheck className="w-3 h-3 text-amber-500" />
               ) : (
@@ -49,14 +42,6 @@ const Header = (props) => {
             </div>
           </div>
         </div>
-
-        <button 
-          onClick={logOutUser}
-          className="flex items-center gap-1.5 text-xs font-medium text-slate-600 hover:text-red-600 bg-white hover:bg-red-50 border border-slate-200 hover:border-red-200 px-3 py-2 rounded-xl transition-all cursor-pointer shadow-xs"
-        >
-          <LogOut className="w-3.5 h-3.5" />
-          <span>Log out</span>
-        </button>
       </div>
     </header>
   )

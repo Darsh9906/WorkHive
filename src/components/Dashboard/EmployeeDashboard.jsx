@@ -6,13 +6,13 @@ import Sidebar from '../Others/Sidebar'
 
 const EmployeeDashboard = (props) => {
   return (
-    <div className='flex min-h-screen w-full bg-[var(--bg-app)]'>
-        <Sidebar data={props.data} changeUser={props.changeUser} />
-        <div className='flex-1 p-10 min-h-screen overflow-y-auto'>
-            <Header data={props.data} changeUser={props.changeUser}/>
-            <TaskListNumber data={props.data} />
-            <TaskList data={props.data}/>
-        </div>
+    <div className="flex min-h-screen w-full bg-slate-50 text-slate-900">
+      <Sidebar data={props.data} changeUser={props.changeUser} />
+      <main className="flex-1 p-6 md:p-8 min-h-screen overflow-y-auto max-w-7xl">
+        <Header data={props.data} changeUser={props.changeUser} />
+        <TaskListNumber data={props.data} />
+        <TaskList data={props.data} />
+      </main>
     </div>
   )
 }

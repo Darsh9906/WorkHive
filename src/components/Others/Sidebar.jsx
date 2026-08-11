@@ -1,5 +1,5 @@
 import React from 'react'
-import { LayoutDashboard, LogOut, Hexagon, Shield, UserCheck } from 'lucide-react'
+import { LayoutDashboard, LogOut, BriefcaseBusiness, Shield, UserCheck } from 'lucide-react'
 
 const Sidebar = ({ data, changeUser }) => {
   const logOutUser = () => {
@@ -19,7 +19,7 @@ const Sidebar = ({ data, changeUser }) => {
         {/* Brand Header */}
         <div className="flex items-center gap-3 px-2 py-1">
           <div className="w-9 h-9 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 shrink-0">
-            <Hexagon className="w-5 h-5 fill-indigo-500/20 text-indigo-400" />
+            <BriefcaseBusiness className="w-5 h-5 fill-indigo-500/20 text-indigo-400" />
           </div>
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
@@ -70,15 +70,6 @@ const Sidebar = ({ data, changeUser }) => {
             </div>
           </div>
         </div>
-
-        {/* Logout Button */}
-        <button
-          onClick={logOutUser}
-          className="wh-btn wh-btn-ghost w-full justify-start text-zinc-400 hover:text-rose-400 hover:bg-rose-500/10 border border-transparent hover:border-rose-500/20 px-3 py-2 text-xs transition-all"
-        >
-          <LogOut className="w-4 h-4" />
-          <span>Log out</span>
-        </button>
       </div>
     </aside>
   )

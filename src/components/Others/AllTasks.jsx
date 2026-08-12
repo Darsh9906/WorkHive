@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react'
 import { AuthContext } from '../../context/AuthProvider'
-import { Users, Search, Filter } from 'lucide-react'
+import { Users, Search, UserX, SearchX } from 'lucide-react'
+import { EmptyState } from '../Common/StateComponents'
 
 const AllTasks = () => {
   const { userData } = useContext(AuthContext)
@@ -9,8 +10,12 @@ const AllTasks = () => {
 
   if (!userData?.employee || userData.employee.length === 0) {
     return (
-      <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-xs mt-6 text-center text-xs text-slate-500">
-        No employee records available.
+      <div className="mt-6">
+        <EmptyState
+          icon={UserX}
+          title="No employees found"
+          description="There are currently no employee records registered in the system."
+        />
       </div>
     )
   }
@@ -86,9 +91,21 @@ const AllTasks = () => {
       </div>
 
       {filteredEmployees.length === 0 ? (
-        <div className="p-8 text-center bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-500">
-          No employees match your search or filter criteria.
-        </div>
+        <EmptyState
+          icon={SearchX}
+          title="No search results"
+          description={
+            searchTerm
+              ? `No employees match "${searchTerm}".`
+              : "No employees match the selected filter."
+          }
+          actionLabel="Reset search & filters"
+          onAction={() => {
+            setSearchTerm('')
+            setStatusFilter('all')
+          }}
+          className="border-dashed bg-slate-50/50"
+        />
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">

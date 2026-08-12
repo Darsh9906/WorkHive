@@ -1,7 +1,57 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Calendar, PlayCircle, CheckCircle2, XCircle } from 'lucide-react'
+import { AuthContext } from '../../context/AuthProvider'
+import { useToast } from '../Common/StateComponents'
 
 const AcceptTask = ({ data }) => {
+  const { userData, setUserData } = useContext(AuthContext)
+  const { showToast } = useToast()
+
+  const handleUpdateStatus = (newStatus) => {
+    const loggedInUserStr = localStorage.getItem('loggedInUser')
+    if (!loggedInUserStr) return
+
+    const loggedInUser = JSON.parse(loggedInUserStr)
+    const empEmail = loggedInUser.data?.email
+
+    const updatedEmployees = userData.employee.map((emp) => {
+      if (emp.email === empEmail) {
+        const updatedTasks = emp.tasks.map((t) => {
+          if (t.taskTitle === data.taskTitle && t.taskDate === data.taskDate && t.active) {
+            return {
+              ...t,
+              active: false,
+              completed: newStatus === 'completed',
+              failed: newStatus === 'failed'
+            }
+          }
+          return t
+        })
+
+        const updatedTaskNumber = {
+          ...emp.taskNumber,
+          active: Math.max(0, (emp.taskNumber?.active || 1) - 1),
+          completed: newStatus === 'completed' ? (emp.taskNumber?.completed || 0) + 1 : emp.taskNumber?.completed || 0,
+          failed: newStatus === 'failed' ? (emp.taskNumber?.failed || 0) + 1 : emp.taskNumber?.failed || 0
+        }
+
+        const updatedEmp = { ...emp, tasks: updatedTasks, taskNumber: updatedTaskNumber }
+        localStorage.setItem('loggedInUser', JSON.stringify({ ...loggedInUser, data: updatedEmp }))
+        return updatedEmp
+      }
+      return emp
+    })
+
+    setUserData({ ...userData, employee: updatedEmployees })
+    localStorage.setItem('employees', JSON.stringify(updatedEmployees))
+
+    if (newStatus === 'completed') {
+      showToast(`Task completed: "${data.taskTitle}"`, 'success')
+    } else {
+      showToast(`Task marked as failed: "${data.taskTitle}"`, 'error')
+    }
+  }
+
   return (
     <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs hover:border-slate-300 hover:shadow-md transition-all duration-200 flex flex-col justify-between min-h-[230px]">
       <div>
@@ -28,11 +78,17 @@ const AcceptTask = ({ data }) => {
         </div>
 
         <div className="flex gap-2">
-          <button className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 px-2.5 rounded-lg text-xs transition-colors cursor-pointer flex items-center justify-center gap-1 shadow-xs">
+          <button
+            onClick={() => handleUpdateStatus('completed')}
+            className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 px-2.5 rounded-lg text-xs transition-colors cursor-pointer flex items-center justify-center gap-1 shadow-xs"
+          >
             <CheckCircle2 className="w-3.5 h-3.5" />
             <span>Complete</span>
           </button>
-          <button className="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-2.5 rounded-lg text-xs transition-colors cursor-pointer flex items-center justify-center gap-1 shadow-xs">
+          <button
+            onClick={() => handleUpdateStatus('failed')}
+            className="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-2.5 rounded-lg text-xs transition-colors cursor-pointer flex items-center justify-center gap-1 shadow-xs"
+          >
             <XCircle className="w-3.5 h-3.5" />
             <span>Fail</span>
           </button>

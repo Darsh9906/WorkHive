@@ -1,9 +1,11 @@
 import React, { useContext, useState } from 'react'
 import { PlusCircle } from 'lucide-react'
 import { AuthContext } from '../../context/AuthProvider'
+import { ErrorState, LoadingSpinner, useToast } from '../Common/StateComponents'
 
 const CreateTask = () => {
   const { userData, setUserData } = useContext(AuthContext)
+  const { showToast } = useToast()
 
   const [taskTitle, setTaskTitle] = useState('')
   const [taskDescription, setTaskDescription] = useState('')
@@ -11,43 +13,74 @@ const CreateTask = () => {
   const [asignTo, setAsignTo] = useState('')
   const [category, setCategory] = useState('')
 
+  const [errorMsg, setErrorMsg] = useState('')
+  const [suggestedEmployee, setSuggestedEmployee] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
   const submitHandler = (e) => {
     e.preventDefault()
+    setErrorMsg('')
+    setSuggestedEmployee('')
 
-    const task = {
-      taskDate,
-      taskDescription,
-      category,
-      taskTitle,
-      active: false,
-      newTask: true,
-      completed: false,
-      failed: false
+    if (!taskTitle.trim() || !taskDescription.trim() || !taskDate.trim() || !asignTo.trim() || !category.trim()) {
+      setErrorMsg('Please fill in all task details before submitting.')
+      return
     }
 
-    const data = [...userData.employee]
+    const availableEmployees = userData?.employee || []
+    const targetEmp = availableEmployees.find(
+      (emp) => emp.firstName.toLowerCase() === asignTo.trim().toLowerCase()
+    )
 
-    data.forEach((emp) => {
-      if (emp.firstName.toLowerCase() === asignTo.toLowerCase()) {
-        emp.tasks.push(task)
-        if (emp.taskNumber) {
-          emp.taskNumber.newTask = (emp.taskNumber.newTask || 0) + 1
-        }
+    if (!targetEmp) {
+      const firstAvailable = availableEmployees[0]?.firstName || 'Aarav'
+      setSuggestedEmployee(firstAvailable)
+      setErrorMsg(`No employee named "${asignTo}" was found in your organization directory.`)
+      return
+    }
+
+    setIsSubmitting(true)
+
+    setTimeout(() => {
+      const task = {
+        taskDate,
+        taskDescription,
+        category,
+        taskTitle,
+        active: false,
+        newTask: true,
+        completed: false,
+        failed: false
       }
-    })
 
-    setUserData({
-      ...userData,
-      employee: data
-    })
+      const data = userData.employee.map((emp) => {
+        if (emp.firstName.toLowerCase() === asignTo.trim().toLowerCase()) {
+          const updatedTasks = [...(emp.tasks || []), task]
+          const updatedTaskNumber = {
+            ...(emp.taskNumber || {}),
+            newTask: ((emp.taskNumber?.newTask) || 0) + 1
+          }
+          return { ...emp, tasks: updatedTasks, taskNumber: updatedTaskNumber }
+        }
+        return emp
+      })
 
-    localStorage.setItem('employees', JSON.stringify(data))
+      setUserData({
+        ...userData,
+        employee: data
+      })
 
-    setAsignTo('')
-    setCategory('')
-    setTaskDate('')
-    setTaskDescription('')
-    setTaskTitle('')
+      localStorage.setItem('employees', JSON.stringify(data))
+
+      showToast(`Task assigned to ${targetEmp.firstName} successfully!`, 'success')
+
+      setAsignTo('')
+      setCategory('')
+      setTaskDate('')
+      setTaskDescription('')
+      setTaskTitle('')
+      setIsSubmitting(false)
+    }, 400)
   }
 
   return (
@@ -56,6 +89,16 @@ const CreateTask = () => {
         <PlusCircle className="w-5 h-5 text-blue-600" />
         <h2 className="text-base font-bold text-slate-900">Assign New Task</h2>
       </div>
+
+      {errorMsg && (
+        <ErrorState
+          title="Task Creation Failed"
+          message={errorMsg}
+          onRetry={suggestedEmployee ? () => setAsignTo(suggestedEmployee) : undefined}
+          retryLabel={suggestedEmployee ? `Assign to ${suggestedEmployee} instead` : undefined}
+          className="mb-5"
+        />
+      )}
 
       <form onSubmit={submitHandler} className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -126,9 +169,14 @@ const CreateTask = () => {
         <div className="flex justify-end pt-2">
           <button
             type="submit"
-            className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-6 rounded-xl text-sm transition-colors cursor-pointer shadow-xs"
+            disabled={isSubmitting}
+            className="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-medium py-2.5 px-6 rounded-xl text-sm transition-all cursor-pointer shadow-xs disabled:opacity-70 flex items-center gap-2"
           >
-            Create Task
+            {isSubmitting ? (
+              <LoadingSpinner size="xs" label="Assigning..." />
+            ) : (
+              <span>Create Task</span>
+            )}
           </button>
         </div>
       </form>

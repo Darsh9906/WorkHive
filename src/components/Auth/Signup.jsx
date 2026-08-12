@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { BriefcaseBusiness, Mail, Lock, User, UserCheck, ArrowRight, Eye, EyeOff, CheckCircle2 } from 'lucide-react'
+import { ErrorState, LoadingSpinner, useToast } from '../Common/StateComponents'
 
 const Signup = ({ onSwitchToLogin }) => {
   const [fullName, setFullName] = useState('')
@@ -10,6 +11,7 @@ const Signup = ({ onSwitchToLogin }) => {
   const [error, setError] = useState('')
   const [successMsg, setSuccessMsg] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const { showToast } = useToast()
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -30,7 +32,9 @@ const Signup = ({ onSwitchToLogin }) => {
     
     setTimeout(() => {
       setIsSubmitting(false)
-      setSuccessMsg('Account created successfully! Switching to Sign In...')
+      const msg = 'Account created successfully! Switching to Sign In...'
+      setSuccessMsg(msg)
+      showToast('Account created successfully!', 'success')
       setTimeout(() => {
         if (onSwitchToLogin) {
           onSwitchToLogin(email, password)
@@ -67,10 +71,11 @@ const Signup = ({ onSwitchToLogin }) => {
         </div>
 
         {error && (
-          <div className="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-xs font-medium flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" />
-            <span>{error}</span>
-          </div>
+          <ErrorState
+            title="Registration Failed"
+            message={error}
+            className="mb-4"
+          />
         )}
 
         {successMsg && (
@@ -159,7 +164,7 @@ const Signup = ({ onSwitchToLogin }) => {
             className="w-full mt-2 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-medium py-2.5 px-4 rounded-xl shadow-xs transition-all cursor-pointer flex items-center justify-center gap-2 text-sm disabled:opacity-70"
           >
             {isSubmitting ? (
-              <span>Creating...</span>
+              <LoadingSpinner size="xs" label="Creating Account..." />
             ) : (
               <>
                 Create Account

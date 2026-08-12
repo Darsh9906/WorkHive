@@ -4,18 +4,17 @@ import NewTask from './NewTask'
 import CompleteTask from './CompleteTask'
 import FailedTask from './FailedTask'
 import { ClipboardList } from 'lucide-react'
+import { EmptyState } from '../Common/StateComponents'
 
 const TaskList = ({ data }) => {
   if (!data?.tasks || data.tasks.length === 0) {
     return (
-      <div className="mt-8 p-10 text-center bg-white border border-slate-200 rounded-xl shadow-xs flex flex-col items-center justify-center">
-        <div className="w-12 h-12 rounded-xl bg-slate-100 text-slate-400 flex items-center justify-center mb-3">
-          <ClipboardList className="w-6 h-6" />
-        </div>
-        <h3 className="text-sm font-semibold text-slate-800">No Tasks Assigned</h3>
-        <p className="text-xs text-slate-500 mt-1 max-w-sm">
-          You currently have no tasks assigned. New tasks will appear here when created by your administrator.
-        </p>
+      <div className="mt-8">
+        <EmptyState
+          icon={ClipboardList}
+          title="No tasks yet"
+          description="Tasks assigned to you will appear here."
+        />
       </div>
     )
   }

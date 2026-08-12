@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { BriefcaseBusiness, Mail, Lock, ArrowRight, Eye, EyeOff, ShieldCheck, UserCheck, KeyRound, AlertCircle, X } from 'lucide-react'
 import Signup from './Signup'
+import { ErrorState, LoadingSpinner } from '../Common/StateComponents'
 
 const Login = ({ handleLogin }) => {
   const [viewMode, setViewMode] = useState('login')
@@ -78,10 +79,17 @@ const Login = ({ handleLogin }) => {
               </div>
 
               {errorMsg && (
-                <div className="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-xs font-medium flex items-center gap-2">
-                  <AlertCircle className="w-4 h-4 text-red-500 shrink-0" />
-                  <span>{errorMsg}</span>
-                </div>
+                <ErrorState
+                  title="Authentication Failed"
+                  message={errorMsg}
+                  onRetry={() => {
+                    setEmail('admin@example.com')
+                    setPassword('123')
+                    setErrorMsg('')
+                  }}
+                  retryLabel="Fill Admin demo credentials"
+                  className="mb-5"
+                />
               )}
 
               <div className="mb-5 p-3 rounded-xl bg-slate-50 border border-slate-200">
@@ -178,7 +186,7 @@ const Login = ({ handleLogin }) => {
                   className="w-full mt-2 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-medium py-2.5 px-4 rounded-xl shadow-xs transition-all cursor-pointer flex items-center justify-center gap-2 text-sm disabled:opacity-70"
                 >
                   {isSubmitting ? (
-                    <span>Signing In...</span>
+                    <LoadingSpinner size="xs" label="Signing In..." />
                   ) : (
                     <>
                       Sign In

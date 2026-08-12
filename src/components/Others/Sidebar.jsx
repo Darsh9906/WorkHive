@@ -1,8 +1,8 @@
 import React from 'react'
-import { LayoutDashboard, LogOut, BriefcaseBusiness, ShieldUser, CircleUserRound, Sun, Moon } from 'lucide-react'
+import { LayoutDashboard, LogOut, BriefcaseBusiness, ShieldUser, CircleUserRound, Sun, Moon, X } from 'lucide-react'
 import { useTheme } from '../../context/ThemeContext'
 
-const Sidebar = ({ data, changeUser }) => {
+const Sidebar = ({ data, changeUser, isOpen, onClose }) => {
   const { theme, toggleTheme } = useTheme()
 
   const logOutUser = () => {
@@ -15,19 +15,27 @@ const Sidebar = ({ data, changeUser }) => {
   const role = data?.email === 'admin@example.com' || !data?.taskNumber ? 'Admin' : 'Employee'
   const userName = data?.firstName || (role === 'Admin' ? 'Admin' : 'Employee')
 
-  return (
-    <aside className="w-64 h-screen shrink-0 sticky top-0 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col justify-between p-5 select-none z-20 transition-colors">
+  const sidebarContent = (
+    <div className="h-full flex flex-col justify-between p-5 select-none">
       <div className="flex flex-col gap-6">
-        <div className="flex items-center gap-3 px-1">
-          <div className="w-9 h-9 rounded-xl bg-emerald-600 dark:bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-xs">
-            <BriefcaseBusiness className="w-5 h-5 text-white" />
-          </div>
-          <div className="flex flex-col">
-            <div className="flex items-center gap-1.5">
-              <span className="font-bold text-base tracking-tight text-slate-900 dark:text-slate-100">WorkHive</span>
+        <div className="flex items-center justify-between px-1">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-emerald-600 dark:bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-xs">
+              <BriefcaseBusiness className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xs text-slate-500 dark:text-slate-400">Workspace Portal</span>
+            <div className="flex flex-col">
+              <span className="font-bold text-base tracking-tight text-slate-900 dark:text-slate-100">WorkHive</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400">Workspace Portal</span>
+            </div>
           </div>
+          {onClose && (
+            <button
+              onClick={onClose}
+              className="md:hidden text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1.5 rounded-lg cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          )}
         </div>
 
         <div className="flex flex-col gap-1">
@@ -69,7 +77,29 @@ const Sidebar = ({ data, changeUser }) => {
           <span>Log out</span>
         </button>
       </div>
-    </aside>
+    </div>
+  )
+
+  return (
+    <>
+      {/* Desktop Sticky Sidebar */}
+      <aside className="hidden md:flex w-64 h-screen shrink-0 sticky top-0 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex-col z-20 transition-colors">
+        {sidebarContent}
+      </aside>
+
+      {/* Mobile Backdrop & Sliding Drawer */}
+      {isOpen && (
+        <div className="md:hidden fixed inset-0 z-50 flex">
+          <div
+            className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs transition-opacity"
+            onClick={onClose}
+          />
+          <aside className="relative w-72 max-w-[80vw] h-full bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 shadow-xl z-50 transition-transform">
+            {sidebarContent}
+          </aside>
+        </div>
+      )}
+    </>
   )
 }
 

@@ -66,7 +66,7 @@ const Login = ({ handleLogin }) => {
           <Signup onSwitchToLogin={handleSwitchToLogin} />
         ) : (
           <div className="w-full">
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm transition-colors">
+            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 sm:p-8 shadow-sm transition-colors">
               <div className="grid grid-cols-2 gap-1 p-1 bg-slate-100 dark:bg-slate-800/80 rounded-xl mb-6">
                 <button
                   type="button"

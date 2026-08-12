@@ -1,5 +1,5 @@
 import React from 'react'
-import { ShieldCheck, UserCheck, Sun, Moon } from 'lucide-react'
+import { ShieldCheck, UserCheck, Sun, Moon, Menu } from 'lucide-react'
 import { useTheme } from '../../context/ThemeContext'
 
 const Header = (props) => {  
@@ -9,23 +9,35 @@ const Header = (props) => {
 
   return (
     <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 mb-6 border-b border-slate-200 dark:border-slate-800 transition-colors">
-      <div className="flex flex-col gap-1">
-        <div className="flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400">
-          <span>Workspace</span>
-          <span>/</span>
-          <span className="text-slate-900 dark:text-slate-100 font-semibold">{role} Dashboard</span>
+      <div className="flex items-start justify-between gap-3 w-full sm:w-auto">
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400">
+            <span>Workspace</span>
+            <span>/</span>
+            <span className="text-slate-900 dark:text-slate-100 font-semibold">{role} Dashboard</span>
+          </div>
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+            Welcome back, <span className="text-emerald-600 dark:text-emerald-400">{userName}</span>
+          </h1>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            {role === 'Admin' 
+              ? 'Manage employee task allocations and view workspace metrics.' 
+              : 'Track your assigned tasks, current work progress, and completed deliverables.'}
+          </p>
         </div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-          Welcome back, <span className="text-emerald-600 dark:text-emerald-400">{userName}</span>
-        </h1>
-        <p className="text-xs text-slate-500 dark:text-slate-400">
-          {role === 'Admin' 
-            ? 'Manage employee task allocations and view workspace metrics.' 
-            : 'Track your assigned tasks, current work progress, and completed deliverables.'}
-        </p>
+
+        {props.onOpenMobileMenu && (
+          <button
+            onClick={props.onOpenMobileMenu}
+            title="Open Menu"
+            className="md:hidden p-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 shadow-xs transition-all cursor-pointer shrink-0 mt-0.5"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+        )}
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center justify-end gap-3 self-end sm:self-auto">
         <button
           onClick={toggleTheme}
           title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}

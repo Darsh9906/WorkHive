@@ -84,8 +84,8 @@ const CreateTask = () => {
   }
 
   return (
-    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-xs mt-6 transition-colors">
-      <div className="flex items-center gap-2 mb-5">
+    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 sm:p-6 shadow-xs mt-4 sm:mt-6 transition-colors">
+      <div className="flex items-center gap-2 mb-4 sm:mb-5">
         <PlusCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
         <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">Assign New Task</h2>
       </div>
@@ -170,7 +170,7 @@ const CreateTask = () => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white font-medium py-2.5 px-6 rounded-xl text-sm transition-all cursor-pointer shadow-xs disabled:opacity-70 flex items-center gap-2"
+            className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white font-medium py-2.5 px-6 rounded-xl text-sm transition-all cursor-pointer shadow-xs disabled:opacity-70 flex items-center justify-center gap-2"
           >
             {isSubmitting ? (
               <LoadingSpinner size="xs" label="Assigning..." />

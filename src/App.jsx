@@ -4,6 +4,7 @@ import EmployeeDashboard from './components/Dashboard/EmployeeDashboard'
 import AdminDashboard from './components/Dashboard/AdminDashboard'
 import { AuthContext } from './context/AuthProvider'
 import { ToastProvider, useToast } from './components/Common/StateComponents'
+import { ThemeProvider } from './context/ThemeContext'
 
 const AppContent = () => {
   const [user, setUser] = useState('')
@@ -50,17 +51,17 @@ const AppContent = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen w-full bg-slate-50 flex items-center justify-center">
+      <div className="min-h-screen w-full bg-slate-50 dark:bg-slate-950 flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 border-3 border-slate-300 border-t-blue-600 rounded-full animate-spin" />
-          <span className="text-xs text-slate-500 font-medium">Loading WorkHive...</span>
+          <div className="w-8 h-8 border-3 border-slate-300 dark:border-slate-700 border-t-emerald-600 dark:border-t-emerald-500 rounded-full animate-spin" />
+          <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">Loading WorkHive...</span>
         </div>
       </div>
     )
   }
 
   return (
-    <div>
+    <div className="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen">
       {user?.role === 'admin' ? (
         <AdminDashboard data={user.data} changeUser={setUser} />
       ) : user?.role === 'employee' ? (
@@ -74,10 +75,13 @@ const AppContent = () => {
 
 const App = () => {
   return (
-    <ToastProvider>
-      <AppContent />
-    </ToastProvider>
+    <ThemeProvider>
+      <ToastProvider>
+        <AppContent />
+      </ToastProvider>
+    </ThemeProvider>
   )
 }
 
-export default App
+export default App
+

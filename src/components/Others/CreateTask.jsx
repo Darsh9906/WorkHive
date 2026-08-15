@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react'
 import { PlusCircle } from 'lucide-react'
 import { AuthContext } from '../../context/AuthProvider'
 import { ErrorState, LoadingSpinner, useToast } from '../Common/StateComponents'
+import { persistEmployees } from '../../utils/localStorage'
 
 const CreateTask = () => {
   const { userData, setUserData } = useContext(AuthContext)
@@ -10,77 +11,70 @@ const CreateTask = () => {
   const [taskTitle, setTaskTitle] = useState('')
   const [taskDescription, setTaskDescription] = useState('')
   const [taskDate, setTaskDate] = useState('')
-  const [asignTo, setAsignTo] = useState('')
+  const [assignedEmployeeId, setAssignedEmployeeId] = useState('')
   const [category, setCategory] = useState('')
+  const [priority, setPriority] = useState('medium')
 
   const [errorMsg, setErrorMsg] = useState('')
-  const [suggestedEmployee, setSuggestedEmployee] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const submitHandler = (e) => {
     e.preventDefault()
     setErrorMsg('')
-    setSuggestedEmployee('')
 
-    if (!taskTitle.trim() || !taskDescription.trim() || !taskDate.trim() || !asignTo.trim() || !category.trim()) {
+    if (!taskTitle.trim() || !taskDescription.trim() || !taskDate.trim() || !assignedEmployeeId || !category.trim()) {
       setErrorMsg('Please fill in all task details before submitting.')
       return
     }
 
-    const availableEmployees = userData?.employee || []
-    const targetEmp = availableEmployees.find(
-      (emp) => emp.firstName.toLowerCase() === asignTo.trim().toLowerCase()
-    )
-
-    if (!targetEmp) {
-      const firstAvailable = availableEmployees[0]?.firstName || 'Aarav'
-      setSuggestedEmployee(firstAvailable)
-      setErrorMsg(`No employee named "${asignTo}" was found in your organization directory.`)
+    const targetEmployee = (userData?.employee || []).find((emp) => String(emp.id) === String(assignedEmployeeId))
+    if (!targetEmployee) {
+      setErrorMsg('Please select a valid employee for this task.')
       return
     }
 
     setIsSubmitting(true)
 
     setTimeout(() => {
-      const task = {
-        taskDate,
-        taskDescription,
-        category,
-        taskTitle,
-        active: false,
-        newTask: true,
-        completed: false,
-        failed: false
-      }
+      const nextEmployees = (userData?.employee || []).map((emp) => {
+        if (String(emp.id) !== String(assignedEmployeeId)) return emp
 
-      const data = userData.employee.map((emp) => {
-        if (emp.firstName.toLowerCase() === asignTo.trim().toLowerCase()) {
-          const updatedTasks = [...(emp.tasks || []), task]
-          const updatedTaskNumber = {
-            ...(emp.taskNumber || {}),
-            newTask: ((emp.taskNumber?.newTask) || 0) + 1
-          }
-          return { ...emp, tasks: updatedTasks, taskNumber: updatedTaskNumber }
+        const task = {
+          id: `task-${Date.now()}-${Math.random().toString(16).slice(2, 8)}`,
+          employeeId: emp.id,
+          title: taskTitle.trim(),
+          description: taskDescription.trim(),
+          priority,
+          dueDate: taskDate,
+          status: 'pending',
+          category: category.trim(),
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          completedAt: null,
+          failedAt: null,
         }
-        return emp
+
+        return {
+          ...emp,
+          tasks: [...(emp.tasks || []), task],
+        }
       })
 
+      const persistedEmployees = persistEmployees(nextEmployees)
       setUserData({
         ...userData,
-        employee: data
+        employee: persistedEmployees,
       })
 
-      localStorage.setItem('employees', JSON.stringify(data))
-
-      showToast(`Task assigned to ${targetEmp.firstName} successfully!`, 'success')
-
-      setAsignTo('')
+      showToast(`Task assigned to ${targetEmployee.firstName} successfully!`, 'success')
+      setAssignedEmployeeId('')
       setCategory('')
+      setPriority('medium')
       setTaskDate('')
       setTaskDescription('')
       setTaskTitle('')
       setIsSubmitting(false)
-    }, 400)
+    }, 250)
   }
 
   return (
@@ -90,15 +84,7 @@ const CreateTask = () => {
         <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">Assign New Task</h2>
       </div>
 
-      {errorMsg && (
-        <ErrorState
-          title="Task Creation Failed"
-          message={errorMsg}
-          onRetry={suggestedEmployee ? () => setAsignTo(suggestedEmployee) : undefined}
-          retryLabel={suggestedEmployee ? `Assign to ${suggestedEmployee} instead` : undefined}
-          className="mb-5"
-        />
-      )}
+      {errorMsg && <ErrorState title="Task Creation Failed" message={errorMsg} className="mb-5" />}
 
       <form onSubmit={submitHandler} className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -129,18 +115,38 @@ const CreateTask = () => {
 
           <div>
             <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1.5">
-              Assign To (Employee Name)
+              Assign To
             </label>
-            <input
-              value={asignTo}
-              onChange={(e) => setAsignTo(e.target.value)}
-              className="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 focus:border-emerald-600 dark:focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 dark:focus:ring-emerald-950 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none transition-all"
-              type="text"
-              placeholder="e.g. Aarav"
-            />
+            <select
+              value={assignedEmployeeId}
+              onChange={(e) => setAssignedEmployeeId(e.target.value)}
+              className="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 focus:border-emerald-600 dark:focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 dark:focus:ring-emerald-950 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 outline-none transition-all"
+            >
+              <option value="">Select employee</option>
+              {(userData?.employee || []).map((employee) => (
+                <option key={employee.id} value={employee.id}>
+                  {employee.firstName}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>
+            <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1.5">
+              Priority
+            </label>
+            <select
+              value={priority}
+              onChange={(e) => setPriority(e.target.value)}
+              className="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 focus:border-emerald-600 dark:focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 dark:focus:ring-emerald-950 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 outline-none transition-all"
+            >
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+
+          <div className="md:col-span-2">
             <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1.5">
               Category
             </label>

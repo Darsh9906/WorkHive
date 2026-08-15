@@ -9,7 +9,6 @@ import { ThemeProvider } from './context/ThemeContext'
 const AppContent = () => {
   const [user, setUser] = useState('')
   const { userData } = useContext(AuthContext)
-  const [loggedInUserData, setLoggedInUserData] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const { showToast } = useToast()
 
@@ -34,17 +33,23 @@ const AppContent = () => {
       localStorage.setItem('loggedInUser', JSON.stringify(newAdminState))
       showToast('Logged in as Administrator', 'success')
       return true
-    } else if (userData?.employee) {
-      const employee = userData.employee.find((e) => email.trim().toLowerCase() === e.email?.trim().toLowerCase() && password === e.password)
+    }
+
+    if (userData?.employee) {
+      const employee = userData.employee.find((e) => {
+        const matchEmail = email.trim().toLowerCase() === e.email?.trim().toLowerCase()
+        return matchEmail && password === e.password
+      })
+
       if (employee) {
         const newEmpState = { role: 'employee', data: employee }
         setUser(newEmpState)
-        setLoggedInUserData(employee)
         localStorage.setItem('loggedInUser', JSON.stringify(newEmpState))
         showToast(`Welcome back, ${employee.firstName}!`, 'success')
         return true
       }
     }
+
     showToast('Invalid email or password. Please try again.', 'error')
     return false
   }
@@ -84,4 +89,4 @@ const App = () => {
 }
 
 export default App
-
+

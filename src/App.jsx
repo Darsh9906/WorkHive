@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 import Login from './components/Auth/Login'
 import EmployeeDashboard from './components/Dashboard/EmployeeDashboard'
 import AdminDashboard from './components/Dashboard/AdminDashboard'
@@ -12,6 +12,20 @@ const AppContent = () => {
   const [isLoading, setIsLoading] = useState(true)
   const { showToast } = useToast()
 
+  const resolvedUserData = useMemo(() => {
+    if (!user?.role || !userData) return null
+
+    if (user.role === 'admin') {
+      return userData.admin?.find((admin) => admin.email === user.data?.email) || userData.admin?.[0] || user.data
+    }
+
+    if (user.role === 'employee') {
+      return userData.employee?.find((employee) => String(employee.id) === String(user.data?.id)) || null
+    }
+
+    return null
+  }, [user, userData])
+
   useEffect(() => {
     const loggedInUser = localStorage.getItem('loggedInUser')
     if (loggedInUser) {
@@ -24,6 +38,22 @@ const AppContent = () => {
     }
     setIsLoading(false)
   }, [])
+
+  useEffect(() => {
+    if (!user?.role || !userData || !resolvedUserData) return
+
+    if (user.role === 'employee' && String(user.data?.id) !== String(resolvedUserData.id)) {
+      const nextUser = { ...user, data: resolvedUserData }
+      setUser(nextUser)
+      localStorage.setItem('loggedInUser', JSON.stringify(nextUser))
+    }
+
+    if (user.role === 'admin' && user.data?.email !== resolvedUserData.email) {
+      const nextUser = { ...user, data: resolvedUserData }
+      setUser(nextUser)
+      localStorage.setItem('loggedInUser', JSON.stringify(nextUser))
+    }
+  }, [resolvedUserData, user, userData])
 
   const handleLogin = (email, password) => {
     if (email === 'admin@example.com' && password === '123') {
@@ -68,9 +98,9 @@ const AppContent = () => {
   return (
     <div className="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen">
       {user?.role === 'admin' ? (
-        <AdminDashboard data={user.data} changeUser={setUser} />
+        <AdminDashboard data={resolvedUserData || user.data} changeUser={setUser} />
       ) : user?.role === 'employee' ? (
-        <EmployeeDashboard data={user.data} changeUser={setUser} />
+        <EmployeeDashboard data={resolvedUserData || user.data} changeUser={setUser} />
       ) : (
         <Login handleLogin={handleLogin} />
       )}

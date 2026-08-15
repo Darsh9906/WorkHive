@@ -86,32 +86,40 @@ const AllTasks = () => {
       return
     }
 
+    const currentEmployeeId = String(editingTask.employeeId)
+    const isSameEmployee = currentEmployeeId === newEmployeeId
+    const updatedTaskPayload = {
+      ...editingTask.task,
+      employeeId: targetEmployee.id,
+      title: taskForm.title.trim(),
+      description: taskForm.description.trim(),
+      dueDate: taskForm.dueDate,
+      priority: taskForm.priority,
+      category: taskForm.category.trim() || 'General',
+      updatedAt: new Date().toISOString(),
+    }
+
     const updatedEmployees = (userData?.employee || []).map((emp) => {
       const existingTasks = emp.tasks || []
 
-      if (String(emp.id) === String(editingTask.employeeId)) {
+      if (isSameEmployee && String(emp.id) === newEmployeeId) {
+        return {
+          ...emp,
+          tasks: existingTasks.map((task) => (task.id === editingTask.task.id ? updatedTaskPayload : task)),
+        }
+      }
+
+      if (String(emp.id) === currentEmployeeId) {
         return {
           ...emp,
           tasks: existingTasks.filter((task) => task.id !== editingTask.task.id),
         }
       }
 
-      if (String(emp.id) === newEmployeeId) {
+      if (!isSameEmployee && String(emp.id) === newEmployeeId) {
         return {
           ...emp,
-          tasks: [
-            ...existingTasks,
-            {
-              ...editingTask.task,
-              employeeId: Number(newEmployeeId),
-              title: taskForm.title.trim(),
-              description: taskForm.description.trim(),
-              dueDate: taskForm.dueDate,
-              priority: taskForm.priority,
-              category: taskForm.category.trim() || 'General',
-              updatedAt: new Date().toISOString(),
-            },
-          ],
+          tasks: [...existingTasks, updatedTaskPayload],
         }
       }
 

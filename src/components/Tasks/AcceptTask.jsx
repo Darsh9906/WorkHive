@@ -14,16 +14,19 @@ const AcceptTask = ({ data }) => {
 
     const loggedInUser = JSON.parse(loggedInUserStr)
     const currentEmployeeId = loggedInUser.data?.id
+    let taskUpdated = false
 
     const updatedEmployees = (userData?.employee || []).map((emp) => {
       if (String(emp.id) !== String(currentEmployeeId)) return emp
 
       const updatedTasks = (emp.tasks || []).map((task) => {
         if (task.id !== data.id) return task
-        if ((task.status === 'completed' || task.status === 'failed') && task.id === data.id) {
+        if (String(task.employeeId) !== String(currentEmployeeId)) return task
+        if (task.status !== 'pending') {
           return task
         }
 
+        taskUpdated = true
         const nextStatus = newStatus === 'completed' ? 'completed' : 'failed'
         return {
           ...task,
@@ -36,6 +39,11 @@ const AcceptTask = ({ data }) => {
 
       return { ...emp, tasks: updatedTasks }
     })
+
+    if (!taskUpdated) {
+      showToast('Task cannot be updated from this view.', 'error')
+      return
+    }
 
     const persistedEmployees = persistEmployees(updatedEmployees)
     setUserData({ ...userData, employee: persistedEmployees })

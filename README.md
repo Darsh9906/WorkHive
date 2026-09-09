@@ -304,4 +304,4 @@ Instead of only following tutorials, I used the project to understand how **stat
 
 This project was built as part of my hands-on learning journey with React.js and frontend development.
 
-If you find the project useful or interesting, consider giving the repository a ⭐.
+

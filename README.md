@@ -74,7 +74,7 @@ The project was built as a hands-on React project to strengthen practical unders
 
 ### Admin Dashboard
 
-The admin dashboard provides an overview of employees and their assigned tasks, allowing the administrator to manage task assignments and monitor task progress.
+The admin dashboard provides an overview of employees and their assigned tasks, allowing the administrator to manage task assignments and monitor task progress
 
 ### Employee Dashboard
 
